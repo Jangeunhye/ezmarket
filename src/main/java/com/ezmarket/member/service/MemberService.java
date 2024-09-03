@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -19,6 +20,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public MemberDto signUp(MemberDto memberDto){
 
         Member member = memberDto.toEntity(passwordEncoder);
@@ -28,6 +30,7 @@ public class MemberService {
         return MemberDto.ofEntity(savedMember);
     }
 
+    @Transactional(readOnly = true)
     public void checkDuplicateEmail(String email, BindingResult bindingResult){
         boolean isDuplicated = memberRepository.existsByEmail(email);
         if (isDuplicated){
