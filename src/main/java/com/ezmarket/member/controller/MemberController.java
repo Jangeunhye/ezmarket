@@ -20,13 +20,13 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/new")
+    @GetMapping("/signup")
     public String signUpForm(Model model){
         model.addAttribute("memberDto", new MemberDto());
         return "member/signup";
     }
 
-    @PostMapping("/new")
+    @PostMapping("/signup")
     public String signUp(@Valid MemberDto memberDto, BindingResult bindingResult) {
         memberService.checkDuplicateEmail(memberDto.getEmail(), bindingResult);
         if (bindingResult.hasErrors()){
@@ -38,5 +38,9 @@ public class MemberController {
         return "redirect:/members/login";
     }
 
+    @GetMapping("/login")
+    public String login(){
+        return "member/login";
+    }
 
 }
