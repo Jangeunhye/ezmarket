@@ -19,14 +19,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Role 계층권한
-    @Bean
-    public RoleHierarchy roleHierarchy(){
-        return RoleHierarchyImpl.fromHierarchy("""
-                ROLE_ADMIN > ROLE_USER
-                """);
-    }
-
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
