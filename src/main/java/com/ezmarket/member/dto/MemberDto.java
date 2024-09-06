@@ -38,7 +38,7 @@ public class MemberDto {
                 .password(passwordEncoder.encode(this.password))
                 .address(this.address)
                 .phone(this.phone)
-                .role(Role.USER)
+                .role(Role.ROLE_ADMIN)
                 .build();
     }
 
