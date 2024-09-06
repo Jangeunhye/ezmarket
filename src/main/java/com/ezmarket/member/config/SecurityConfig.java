@@ -2,6 +2,8 @@ package com.ezmarket.member.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +19,15 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // Role 계층권한
+    @Bean
+    public RoleHierarchy roleHierarchy(){
+        return RoleHierarchyImpl.fromHierarchy("""
+                ROLE_ADMIN > ROLE_USER
+                """);
+    }
+
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests((authorizeHttpRequests)-> authorizeHttpRequests
@@ -24,6 +35,29 @@ public class SecurityConfig {
                 .requestMatchers("/members/**","/").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
+
+        http.formLogin((auth)->auth
+                        .loginPage("/members/login")
+                        .usernameParameter("email")
+                        .loginProcessingUrl("/members/loginProc")
+                        .defaultSuccessUrl("/")
+                        .permitAll()
+                );
+
+        http.sessionManagement((auth)-> auth
+                // 동시접속 최대 로그인 수
+                .maximumSessions(1)
+                // 기존 세션 만료
+                .maxSessionsPreventsLogin(false)
+        );
+
+        http.sessionManagement((auth)-> auth
+                .sessionFixation().changeSessionId());
+
+        http.logout((auth)-> auth
+                .logoutUrl("/members/logout")
+                .logoutSuccessUrl("/"));
+
         return http.build();
     }
 
