@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+
+  <!--  사용자 CSS 추가-->
+  <th:block layout:fragment="css">
+    <style>
+        .fieldError{
+            color: #bd2130;
+        }
+    </style>
+  </th:block>
+
+
+  <div layout:fragment="content"  >
+    <form action="/admin/item/new" method="post" enctype="multipart/form-data" th:object="${itemDto}">
+      <div class="mb-3">
+        <select th:field="*{sellStatus}" class="form-select" aria-label="Default select example">
+          <option th:value="SELL">판매중</option>
+          <option th:value="SOLD_OUT">품절</option>
+        </select>
+        <p th:if="${#fields.hasErrors('sellStatus')}" class="fieldError" th:errors="*{sellStatus}"></p>
+      </div>
+      <div class="mb-3">
+        <label th:for="itemName" class="form-label">상품명</label>
+        <input type="text" class="form-control" th:field="*{itemName}">
+        <p th:if="${#fields.hasErrors('itemName')}" class="fieldError" th:errors="*{itemName}"></p>
+      </div>
+      <div class="mb-3">
+        <label th:for="itemPrice" class="form-label">상품 가격</label>
+        <input type="number" class="form-control" th:field="*{itemPrice}">
+        <p th:if="${#fields.hasErrors('itemPrice')}" class="fieldError" th:errors="*{itemPrice}"></p>
+      </div>
+      <div class="mb-3">
+        <label th:for="itemDetail" class="form-label">상세 설명</label>
+        <textarea class="form-control" th:field="*{itemDetail}" rows="5"></textarea>
+        <p th:if="${#fields.hasErrors('itemDetail')}" class="fieldError" th:errors="*{itemDetail}"></p>
+      </div>
+      <div class="mb-3">
+        <label th:for="stock" class="form-label">재고 수량</label>
+        <input type="number" class="form-control" th:field="*{stock}">
+        <p th:if="${#fields.hasErrors('stock')}" class="fieldError" th:errors="*{stock}"></p>
+      </div>
+      <div class="mb-3">
+        <label for="uploadFile" class="form-label">상품 이미지</label>
+        <input class="form-control" type="file" id="uploadFile" name="uploadFile" multiple>
+      </div>
+      <div class="d-grid d-md-flex justify-content-md-center">
+        <button type="submit" class="btn btn-primary">상품 등록</button>
+
+      </div>
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    </form>
+  </div>
