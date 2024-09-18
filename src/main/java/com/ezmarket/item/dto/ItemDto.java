@@ -1,6 +1,7 @@
 package com.ezmarket.item.dto;
 
 import com.ezmarket.image.domain.entity.Image;
+import com.ezmarket.image.dto.ImageDto;
 import com.ezmarket.item.domain.entity.Item;
 import com.ezmarket.item.domain.enums.SellStatus;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 @Getter @Setter
@@ -16,6 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemDto {
+
+    private Long id;
 
     @NotNull(message = "판매 상태를 입력해주세요")
     private SellStatus sellStatus;
@@ -32,6 +36,8 @@ public class ItemDto {
     @NotNull(message = "재고 수량을 입력해주세요")
     private Integer stock;
 
+    private List<String> imageDtoList;
+
     public Item toEntity(){
         return Item.builder()
                 .itemName(this.itemName)
@@ -45,11 +51,13 @@ public class ItemDto {
 
     public static ItemDto ofEntity(Item item){
         return ItemDto.builder()
+                .id(item.getId())
                 .itemName(item.getItemName())
                 .itemDetail(item.getItemDetail())
                 .itemPrice(item.getPrice())
                 .stock(item.getStock())
                 .sellStatus(item.getSellStatus())
+                .imageDtoList(item.getImageList().stream().map(image-> image.getImageUrl()).collect(Collectors.toList()))
                 .build();
     }
 
