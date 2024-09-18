@@ -1,6 +1,7 @@
 package com.ezmarket.item.controller;
 
 
+import com.ezmarket.item.domain.entity.Item;
 import com.ezmarket.item.dto.ItemDto;
 import com.ezmarket.item.service.ItemService;
 import com.ezmarket.member.dto.CustomUserDetails;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
+import java.util.List;
+
 
 
 @Slf4j
@@ -27,9 +30,18 @@ public class ItemController {
     private final ItemService itemService;
 
 
+    @GetMapping("/")
+    public String items(Model model){
+
+        List<ItemDto> itemDtoList = itemService.getItems();
+        log.info(itemDtoList.toString());
+        model.addAttribute("itemDtoList",itemDtoList);
+        return "main";
+    }
+
 
     @GetMapping("/admin/item/new")
-    public String items(Model model){
+    public String createItem(Model model){
         model.addAttribute("itemDto",new ItemDto());
         return "item/itemForm";
 
@@ -46,7 +58,7 @@ public class ItemController {
         if(bindingResult.hasErrors()){
             return "item/itemForm";
         }
-        itemService.createProduct(itemDto, files);
-        return "main";
+        itemService.createItem(itemDto, files);
+        return "redirect:/";
     }
 }

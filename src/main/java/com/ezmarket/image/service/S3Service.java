@@ -74,7 +74,7 @@ public class S3Service {
         if(fileName.isBlank()){
             throw new IllegalArgumentException("파일 이름이 비어 있습니다.");
         }
-        List<String> fileValidate = List.of(".jpg",".jpeg",".png");
+        List<String> fileValidate = List.of(".jpg",".jpeg",".png",".webp");
 
         String fileExtension = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
         if(!fileValidate.contains(fileExtension)){
