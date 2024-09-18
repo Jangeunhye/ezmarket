@@ -23,6 +23,10 @@ dependencies {
 //	타임리프 레이아웃을 위한 설정
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
+//	devtools
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
