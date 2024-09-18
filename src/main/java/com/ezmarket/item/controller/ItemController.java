@@ -1,7 +1,5 @@
 package com.ezmarket.item.controller;
 
-
-import com.ezmarket.item.domain.entity.Item;
 import com.ezmarket.item.dto.ItemDto;
 import com.ezmarket.item.service.ItemService;
 import com.ezmarket.member.dto.CustomUserDetails;
@@ -13,9 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +25,18 @@ public class ItemController {
 
     private final ItemService itemService;
 
-
     @GetMapping("/")
-    public String items(Model model){
-
+    public String getItems(Model model){
         List<ItemDto> itemDtoList = itemService.getItems();
-        log.info(itemDtoList.toString());
         model.addAttribute("itemDtoList",itemDtoList);
         return "main";
+    }
+
+    @GetMapping("/item/{id}")
+    public String getItemDetail(@PathVariable("id") Long id, Model model){
+        ItemDto itemDto = itemService.getItemDetail(id);
+        model.addAttribute("itemDto",itemDto);
+        return "item/itemDetail";
     }
 
 

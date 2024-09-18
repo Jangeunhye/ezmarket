@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,6 +37,11 @@ public class ItemService {
         Item item = itemDto.toEntity();
         imageService.saveImage(item, files);
         itemRepository.save(item);
+    }
+    @Transactional(readOnly = true)
+    public ItemDto getItemDetail(Long id){
+        Item item = itemRepository.findById(id).orElseThrow(null);
+        return ItemDto.ofEntity(item);
 
     }
 
