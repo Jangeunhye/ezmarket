@@ -29,7 +29,7 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end; /* 버튼이 이미지 끝부분에 맞게 위치 */
-            align-items: flex-end;
+            /*align-items: flex-end;*/
 
         }
         .detail-box{
@@ -37,13 +37,38 @@
             margin-top: 50px;
             margin-bottom: 50px;
             padding-left: 20px;
+            padding-right: 20px;
             min-height: 200px;
             background-color: #f0f0f0;
-            border-radius: 10px;
             display: flex;
             flex-direction: column;
-
         }
+
+        .btn-black{
+            background: black;
+            color:white;
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            border: none;
+        }
+        .btn-white{
+            background: white;
+            border: 1px black solid;
+            color:black;
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+        }
+        .btn-red{
+            background: #e6162a;
+            border: none;
+            color:white;
+            width: 100%;
+            padding: 10px;
+        }
+
+
 
     </style>
   </th:block>
@@ -81,16 +106,21 @@
   <div layout:fragment="content" style="margin-left:25%;margin-right:25%; margin-top:50px;">
 
 <!--    ADMIN 계정 수정권한 -->
-    <div class="d-flex justify-content-end">
-      <a th:href="@{/admin/item/edit}" sec:authorize="hasRole('ADMIN')" class="btn border">Edit</a>
-    </div>
+    <div class="d-flex justify-content-end " sec:authorize="hasRole('ADMIN')">
+      <a th:href="@{/admin/items/{id}/update(id=${itemDto.getId()})}"  class="btn border me-2">수정</a>
+
+      <!-- 삭제 버튼 _method로 DELETE 처리 -->
+      <form th:action="@{/admin/items/{id}(id=${itemDto.getId()})}" method="post" >
+        <input type="hidden" name="_method" value="delete"/>
+        <button type="submit" class="btn border bg-black text-white">삭제</button>
+      </form>    </div>
 
     <form class="d-flex" method="post">
       <!-- 상품 ID를 보내기 위한 숨겨진 필드 추가 -->
       <input type="hidden" name="itemId" th:value="${itemDto.getId()}">
 
       <div class="rep-img-box">
-        <img th:src="${itemDto.imageDtoList.get(0)}" class = "rounded rep-img" th:alt="${itemDto.itemName}">
+        <img th:src="${itemDto.imageDtoList.get(0)}" class = "rep-img" th:alt="${itemDto.itemName}">
       </div>
       <div class="h-auto w-50 d-flex flex-column">
         <h3 class="mt-4" th:text="${itemDto.itemName}"></h3>
@@ -106,12 +136,12 @@
         </div>
 
         <div class="button-container mb-1" sec:authorize="hasAnyRole('USER','ANONYMOUS')">
-          <div th:if="${itemDto.sellStatus.toString() == 'SELL'}" class="text-right">
-            <button type="button" class="btn btn-light border border-dark btn-lg" onclick="addCart()">장바구니 담기</button>
-            <button type="button" class="btn btn-dark btn-lg" onclick="order()">주문하기</button>
+          <div th:if="${itemDto.sellStatus.toString() == 'SELL'}" class="d-flex">
+            <button type="button" class="btn-white me-1" onclick="addCart()">장바구니 담기</button>
+            <button type="button" class="btn-black" onclick="order()">주문하기</button>
           </div>
           <div th:unless="${itemDto.sellStatus.toString() == 'SELL'}" class="text-right">
-            <button type="button" class="btn btn-danger btn-lg">품절</button>
+            <button type="button" class="btn-red">품절</button>
           </div>
         </div>
 
@@ -125,19 +155,19 @@
         <div class="d-flex align-items-center" sec:authorize="hasRole('ADMIN')">
           <span class="label-box">판매상태</span>
           <span th:if="${itemDto.sellStatus.toString() == 'SELL'}" th:text="판매중" class="fs-5"></span>
-          <span th:unless="${itemDto.sellStatus.toString() == 'SELL'}" th:text="품절" class="fs-5 color"></span>
+          <span th:unless="${itemDto.sellStatus.toString() == 'SELL'}" th:text="품절" class="fs-5"></span>
         </div>
       </div>
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
     </form>
 
     <div class="detail-box">
-        <h4 class="fs-4 mt-4">상품 상세 설명</h4>
+        <h4 class="fs-5 mt-4">상품 상세 설명</h4>
         <hr class="my-2">
         <p th:text="${itemDto.itemDetail}"></p>
     </div>
     <div th:each="image : ${itemDto.imageDtoList}" class="text-center">
-      <img th:if="${not #strings.isEmpty(image)}" th:src="${image}" class="rounded mb-3" width="100%">
+      <img th:if="${not #strings.isEmpty(image)}" th:src="${image}" class="mb-3" width="100%">
     </div>
 
   </div>
