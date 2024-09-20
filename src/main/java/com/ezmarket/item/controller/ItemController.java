@@ -26,10 +26,17 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/")
-    public String getItems(Model model){
-        List<ItemDto> itemDtoList = itemService.getItems();
+    public String getSellingItems(Model model){
+        List<ItemDto> itemDtoList = itemService.getSellingItems();
         model.addAttribute("itemDtoList",itemDtoList);
-        return "main";
+        return "item/itemList";
+    }
+
+    @GetMapping("/admin/items")
+    public String getAllItems(Model model){
+        List<ItemDto> itemDtoList = itemService.getAllItems();
+        model.addAttribute("itemDtoList",itemDtoList);
+        return "item/adminItemList";
     }
 
     @GetMapping("/item/{id}")

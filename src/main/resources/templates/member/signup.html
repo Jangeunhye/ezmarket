@@ -9,6 +9,9 @@
         .fieldError{
             color: #bd2130;
         }
+        input{
+            margin-bottom: 15px;
+        }
     </style>
   </th:block>
 
@@ -42,7 +45,7 @@
         <input type="text" th:field="*{address}" class="form-control" placeholder="Address">
         <p th:if="${#fields.hasErrors('address')}" class="fieldError" th:errors="*{address}"></p>
       </div>
-      <button type="submit" class="btn btn-primary">회원가입</button>
+      <button type="submit" class="btn btn-dark">회원가입</button>
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
     </form>
   </div>

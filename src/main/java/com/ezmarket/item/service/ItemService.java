@@ -3,6 +3,7 @@ package com.ezmarket.item.service;
 import com.ezmarket.image.repository.ImageRepository;
 import com.ezmarket.image.service.ImageService;
 import com.ezmarket.item.domain.entity.Item;
+import com.ezmarket.item.domain.enums.SellStatus;
 import com.ezmarket.item.dto.ItemDto;
 import com.ezmarket.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,16 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
     @Transactional(readOnly = true)
-    public List<ItemDto> getItems(){
+    public List<ItemDto> getSellingItems(){
+        List<Item> itemList = itemRepository.findBySellStatus(SellStatus.SELL);
+        List<ItemDto> itemDtoList = itemList.stream().map(item-> ItemDto.ofEntity(item)).collect(Collectors.toList());
+        return itemDtoList;
+    }
+
+
+
+    @Transactional(readOnly = true)
+    public List<ItemDto> getAllItems(){
         List<Item> itemList = itemRepository.findAll();
         List<ItemDto> itemDtoList = itemList.stream().map(item-> ItemDto.ofEntity(item)).collect(Collectors.toList());
         return itemDtoList;
