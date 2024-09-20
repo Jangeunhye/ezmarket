@@ -5,14 +5,14 @@
 
   <body>
     <div th:fragment="header">
-      <nav class="navbar navbar-expand-sm bg-dark navbar-dark custom-navbar px-5 py-2">
+      <nav class="navbar navbar-expand-sm bg-black navbar-dark custom-navbar px-5 py-2">
         <a class="navbar-brand" href="/" >EZmarket</a>
 
         <!-- 왼쪽 메뉴 (상품 등록, 관리, 장바구니, 구매이력) -->
         <div class="collapse navbar-collapse pe-3" >
           <ul class="navbar-nav me-auto">
             <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-              <a class="nav-link" href="/admin/item/new">상품 등록</a>
+              <a class="nav-link" href="/admin/items/new">상품 등록</a>
             </li>
             <li class="nav-item" sec:authorize="hasRole('ADMIN')">
               <a class="nav-link" href="/admin/items">상품 관리</a>

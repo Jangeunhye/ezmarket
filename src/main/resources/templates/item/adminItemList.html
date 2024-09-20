@@ -15,7 +15,7 @@
     <div class="container mt-5">
       <div class="row">
         <div class="col-md-3" th:each="itemDto : ${itemDtoList}">
-          <a th:href="@{/item/{id}(id=${itemDto.getId()})}" class="card item-card" style="text-decoration:none; color: black; margin-bottom: 20px;">
+          <a th:href="@{/items/{id}(id=${itemDto.getId()})}" class="card item-card" style="text-decoration:none; color: black; margin-bottom: 20px;">
             <div>
               <img th:src="${itemDto.getImageDtoList().get(0)}" class="card-img-top" alt="item Image" style="width: 100%; height: 250px; object-fit: cover">
             </div>
@@ -25,10 +25,10 @@
             </div>
             <div class="mb-2 me-2">
               <div th:if="${itemDto.sellStatus.toString() == 'SELL'}" class="d-flex justify-content-end">
-                <button type="button" class="btn btn-dark">판매중</button>
+                <button type="button" class="btn border">판매중</button>
               </div>
               <div th:unless="${itemDto.sellStatus.toString() == 'SELL'}" class="d-flex justify-content-end">
-                <button type="button" class="btn btn-danger">품절</button>
+                <button type="button" class="btn bg-black text-white border">품절</button>
               </div>
             </div>
           </a>

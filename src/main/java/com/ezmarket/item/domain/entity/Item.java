@@ -3,6 +3,7 @@ package com.ezmarket.item.domain.entity;
 import com.ezmarket.global.common.BaseTimeEntity;
 import com.ezmarket.image.domain.entity.Image;
 import com.ezmarket.item.domain.enums.SellStatus;
+import com.ezmarket.item.dto.ItemDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,5 +43,12 @@ public class Item extends BaseTimeEntity {
         this.imageList.add(image);
     }
 
+    public void updateItem(ItemDto itemDto){
+        this.itemName = itemDto.getItemName();
+        this.price = itemDto.getItemPrice();
+        this.itemDetail = itemDto.getItemDetail();
+        this.stock = itemDto.getStock();
+        this.sellStatus = itemDto.getSellStatus();
+    }
 
 }
