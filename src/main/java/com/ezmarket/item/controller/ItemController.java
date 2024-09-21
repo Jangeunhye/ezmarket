@@ -2,11 +2,9 @@ package com.ezmarket.item.controller;
 
 import com.ezmarket.item.dto.ItemDto;
 import com.ezmarket.item.service.ItemService;
-import com.ezmarket.member.dto.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
