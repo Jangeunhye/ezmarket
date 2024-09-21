@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+  <style>
+
+      .form-container {
+          margin: 40px auto;
+          max-width: 600px;
+          padding: 20px;
+          background-color: #f9f9f9;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .form-label {
+          font-weight: bold;
+          margin-bottom: 8px;
+          margin-top: 8px;
+      }
+
+
+
+  </style>
+
+  <div layout:fragment="content">
+    <div class="form-container border p-4">
+      <h2>주문/결제</h2>
+      <hr>
+      <form>
+        <h4 class="mt-4 mb-4">받는사람정보</h4>
+        <div>
+          <div class="mb-3">
+            <label th:for="name" class="form-label">이름</label>
+            <input type="text" th:field="*{memberDto.name}" class="form-control" placeholder="이름을 입력하세요">
+          </div>
+          <div class="mb-3">
+            <label th:for="phone" class="form-label">연락처</label>
+            <input type="text" th:field="*{memberDto.phone}" class="form-control" placeholder="연락처를 입력하세요">
+          </div>
+          <div class="mb-3">
+            <label th:for="address" class="form-label">주소</label>
+            <input type="text" th:field="*{memberDto.address}" class="form-control" placeholder="주소를 입력하세요">
+          </div>
+        </div>
+
+        <h4 class="mt-4 mb-4">주문상품</h4>
+        <div class="d-flex bg-light rounded p-4">
+          <!-- 상품 이미지 -->
+          <div>
+            <img th:src="${orderItemDto.getThumbnailImageUrl()}" alt="상품 이미지"  style="width: 150px; height: 150px; object-fit: cover; border-radius: 3px">
+          </div>
+
+          <!-- 상품 정보 -->
+          <div class="d-flex flex-column ms-4 w-100">
+            <div class="fs-5" th:text="${orderItemDto.itemName}">상품 이름</div>
+            <hr>
+            <div>
+              <span class="fs-6">가격: </span>
+              <span th:text="${#numbers.formatInteger(orderItemDto.itemPrice, 0, 'COMMA')}" class="fs-5">0원</span>
+
+            </div>
+            <div class="mt-2">
+              <span class="fs-6">수량: </span>
+              <span th:text="${orderItemDto.quantity}">수량</span>
+            </div>
+          </div>
+        </div>
+
+        <!--  총 가격-->
+        <hr>
+        <div class="d-flex flex-column">
+          <h4 class="mt-4 mb-4">결제금액</h4>
+          <div>
+            <div th:text="${#numbers.formatInteger(orderItemDto.itemPrice * orderItemDto.quantity, 0, 'COMMA')} + '원'" class="fs-5 fw-bold"></div>
+          </div>
+          <button type="submit" class="bg-black text-white" style="border: none; padding: 10px; margin-top: 30px;">주문하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</html>
