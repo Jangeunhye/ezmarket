@@ -59,7 +59,6 @@ public class Item extends BaseTimeEntity {
     public void removeStock(int quantity){
         int restStock = this.stock - quantity;
         if(restStock<0){
-            log.info("상품 재고 부족함");
             throw new OutOfStockException("상품의 재고가 부족합니다. (현재 재고 수량: "+ this.stock+")");
         }
         this.stock = restStock;

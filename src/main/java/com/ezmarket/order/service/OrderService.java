@@ -3,7 +3,7 @@ package com.ezmarket.order.service;
 import com.ezmarket.item.domain.entity.Item;
 import com.ezmarket.item.repository.ItemRepository;
 import com.ezmarket.member.domain.entity.Member;
-import com.ezmarket.member.dto.MemberDto;
+import com.ezmarket.member.domain.enums.Role;
 import com.ezmarket.member.repository.MemberRepository;
 import com.ezmarket.order.domain.entity.Order;
 import com.ezmarket.order.dto.OrderDto;
@@ -83,4 +83,31 @@ public class OrderService {
     }
 
 
+    public List<Order> getOrders(String roles, String email){
+
+        List<Order> orderList  = new ArrayList<>();
+
+        // ADMIN이라면
+        if(roles.contains("ROLE_ADMIN")){
+            orderList  = orderRepository.findAll();
+        } else if (roles.contains("ROLE_USER")) {
+            Member member = memberRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+            orderList = orderRepository.findAllByMember(member);
+        }
+
+        return orderList;
+
+    }
+
+    @Transactional
+    public void updateOrderStatus(Long orderId,String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
+
+        if (!member.getId().equals(order.getMember().getId()) && !member.getRole().equals(Role.ROLE_ADMIN)) {
+            throw new IllegalStateException("취소 권한이 없습니다.");
+        }
+
+        order.cancelOrder();
+    }
 }
