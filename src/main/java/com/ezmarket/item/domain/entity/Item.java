@@ -4,14 +4,17 @@ import com.ezmarket.global.common.BaseTimeEntity;
 import com.ezmarket.image.domain.entity.Image;
 import com.ezmarket.item.domain.enums.SellStatus;
 import com.ezmarket.item.dto.ItemDto;
+import com.ezmarket.order.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @Builder
 @Entity
 @Getter
@@ -39,6 +42,8 @@ public class Item extends BaseTimeEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> imageList;
 
+
+
     public void addItemImages(Image image){
         this.imageList.add(image);
     }
@@ -51,4 +56,12 @@ public class Item extends BaseTimeEntity {
         this.sellStatus = itemDto.getSellStatus();
     }
 
+    public void removeStock(int quantity){
+        int restStock = this.stock - quantity;
+        if(restStock<0){
+            log.info("상품 재고 부족함");
+            throw new OutOfStockException("상품의 재고가 부족합니다. (현재 재고 수량: "+ this.stock+")");
+        }
+        this.stock = restStock;
+    }
 }

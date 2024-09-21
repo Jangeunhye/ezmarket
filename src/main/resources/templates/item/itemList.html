@@ -10,6 +10,19 @@
     }
   </style>
 
+  <!-- 자바스크립트 추가 -->
+  <th:block layout:fragment="script">
+    <script th:inline="javascript">
+        window.onload = function() {
+            /*<![CDATA[*/
+            var successMessage = /*[[${successMessage}]]*/ null;
+            if (successMessage) {
+                alert(successMessage);
+            }
+            /*]]>*/
+        }
+    </script>
+  </th:block>
 
   <div layout:fragment="content">
     <div class="container mt-5">
