@@ -70,10 +70,6 @@
           <input type="hidden" th:field="*{orderItemDtoList[__${iterStat.index}__].amounts}">
           <input type="hidden" th:field="*{orderItemDtoList[__${iterStat.index}__].thumbnailImageUrl}">
 
-
-
-
-
           <!-- 상품 이미지 -->
           <div>
             <img th:src="${orderItemDto.thumbnailImageUrl}" alt="상품 이미지"  style="width: 150px; height: 150px; object-fit: cover; border-radius: 3px">

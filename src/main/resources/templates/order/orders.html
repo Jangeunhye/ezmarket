@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+
+  <th:block layout:fragment="css">
+  <style>
+      .button-container{
+          position: relative;
+      }
+      .cancel-button {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          width: 150px;
+          padding: 10px;
+          background-color: white;
+          border: 2px solid #e6162a;
+          color: #e6162a;
+      }
+      .cancel-button:hover {
+          background-color: #e6162a;
+          color: white;
+          border: none;
+
+      }
+
+      .canceled-button{
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          width: 150px;
+          padding: 10px;
+          background-color: #e6162a;
+          color: white;
+          border: none;
+          opacity: 75%;
+      }
+
+  </style>
+  </th:block>
+  <th:block layout:fragment="script">
+  <script th:inline="javascript">
+      function cancelOrder(orderId) {
+          const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+          fetch(`/order/${orderId}/cancel`, {
+              method: 'PATCH',
+              headers:{
+                  [csrfHeader]: csrfToken
+              }
+          })
+              .then(response => {
+                  if(response.ok) {
+                      alert('주문이 취소되었습니다.');
+                      location.reload();
+                  } else {
+                      alert('주문 취소에 실패했습니다.');
+                  }
+              })
+              .catch(error => {
+                  console.log('에러 발생:', error);
+                  alert('오류가 발생했습니다.');
+              });
+      }
+  </script>
+  </th:block>.
+  <div layout:fragment="content">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <div class="container mt-5">
+      <div class="row">
+        <h4 class="mt-4 mb-4">주문 목록</h4>
+        <div th:each="order : ${orderList}" class="d-flex justify-content-between bg-light rounded p-4 mb-3">
+          <div class="d-flex flex-column" style="text-decoration: none; color: inherit;">
+            <div>
+              <span class="fw-bold">주문일자: </span>
+              <span th:text="${order.createdAt}"></span>
+            </div>
+            <div>
+              <span class="fw-bold">주문상태: </span>
+              <span th:text="${order.orderStatus.toString()=='ORDER'? '주문완료': '주문취소'}"></span>
+            </div>
+            <div>
+              <span class="fw-bold">주문자: </span>
+              <span th:text="${order.member.name}"></span>
+            </div>
+            <div>
+              <span class="fw-bold">수령인: </span>
+              <span th:text="${order.receiverName}"></span>
+            </div>
+            <div>
+              <span class="fw-bold">수령인 연락처: </span>
+              <span th:text="${order.receiverPhone}"></span>
+            </div>
+            <div>
+              <span class="fw-bold">배송지: </span>
+              <span th:text="${order.receiverAddress}"></span>
+            </div>
+            <div>
+              <span class="fw-bold">결제 금액</span>
+              <span th:text="${#numbers.formatInteger(order.totalAmounts, 0, 'COMMA')} + '원'"></span>
+            </div>
+          </div>
+          <div class="button-container">
+            <button class="cancel-button rounded" th:onclick="'cancelOrder(\'' + ${order.id} + '\')'" th:if="${order.orderStatus.toString() == 'ORDER'}">주문취소하기</button>
+            <button class="canceled-button rounded" disabled  th:if="${order.orderStatus.toString() == 'CANCEL'}">주문취소완료</button>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
