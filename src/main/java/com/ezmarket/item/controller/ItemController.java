@@ -83,7 +83,6 @@ public class ItemController {
     @PostMapping("/admin/items/new")
     public String itemSave(@Valid ItemDto itemDto, BindingResult bindingResult,
                            @RequestPart(value = "uploadFile") ArrayList<MultipartFile> files,
-                           @AuthenticationPrincipal CustomUserDetails customUserDetails,
                            Model model) throws Exception {
         model.addAttribute("itemDto",itemDto);
         model.addAttribute("uploadFile",files);
