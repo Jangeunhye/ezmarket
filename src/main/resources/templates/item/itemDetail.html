@@ -29,7 +29,6 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end; /* 버튼이 이미지 끝부분에 맞게 위치 */
-            /*align-items: flex-end;*/
 
         }
         .detail-box{
@@ -76,14 +75,12 @@
 <!--    자바스크립트 추가-->
   <th:block layout:fragment="script">
     <script th:inline="javascript">
-        console.log("Sell Status:", [[${itemDto.sellStatus}]]);
 
       // 타임리프 변수 사용하기 위한 코드
         /*<![CDATA[*/
       function addCart(){
           let form = document.querySelector('form');
           form.action = "/cart/add"
-          console.log(form.action);
           form.submit()
       }
 
@@ -91,7 +88,6 @@
           let form = document.querySelector('form');
 
           form.action="/order"
-          console.log(form.action);
 
           form.submit()
       }
@@ -115,7 +111,7 @@
         <button type="submit" class="btn border bg-black text-white">삭제</button>
       </form>    </div>
 
-    <form class="d-flex" method="post">
+    <form class="d-flex" method="get">
       <!-- 상품 ID를 보내기 위한 숨겨진 필드 추가 -->
       <input type="hidden" name="itemId" th:value="${itemDto.getId()}">
 

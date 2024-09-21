@@ -6,7 +6,7 @@ import com.ezmarket.item.domain.entity.Item;
 import com.ezmarket.item.domain.enums.SellStatus;
 import com.ezmarket.item.dto.ItemDto;
 import com.ezmarket.item.repository.ItemRepository;
-import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -52,7 +52,7 @@ public class ItemService {
 
     @Transactional(readOnly = true)
     public ItemDto getItemDetail(Long id){
-        Item item = itemRepository.findById(id).orElseThrow(null);
+        Item item = itemRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return ItemDto.ofEntity(item);
 
     }
@@ -60,7 +60,7 @@ public class ItemService {
 
     @Transactional
     public void updateItem(ItemDto itemDto, ArrayList<MultipartFile> files) throws Exception {
-        Item item = itemRepository.findById(itemDto.getId()).orElseThrow(EntityExistsException::new);
+        Item item = itemRepository.findById(itemDto.getId()).orElseThrow(EntityNotFoundException::new);
         item.updateItem(itemDto);
 
         boolean existFile = files.stream().anyMatch(file-> !file.isEmpty());
@@ -72,7 +72,7 @@ public class ItemService {
 
     @Transactional
     public void deleteItem(Long id) throws Exception {
-        Item item = itemRepository.findById(id).orElseThrow(EntityExistsException::new);
+        Item item = itemRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
         // S3 삭제
         imageService.deleteImage(item);
