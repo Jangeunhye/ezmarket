@@ -6,17 +6,14 @@ import com.ezmarket.member.domain.entity.Member;
 import com.ezmarket.order.domain.enums.OrderStatus;
 import com.ezmarket.orderItem.OrderItem;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Entity @Getter
 @Table(name="orders")
 public class Order extends BaseTimeEntity {
 
@@ -52,4 +49,10 @@ public class Order extends BaseTimeEntity {
     public void updateTotalAmounts(Long totalAmounts){
         this.totalAmounts = totalAmounts;
     }
+
+    public void cancelOrder(){
+        this.orderStatus = OrderStatus.CANCEL;
+    }
+
+
 }
