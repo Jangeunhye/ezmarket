@@ -78,9 +78,19 @@
 
       // 타임리프 변수 사용하기 위한 코드
         /*<![CDATA[*/
+
+      window.onload = function() {
+          var errorMessage = /*[[${errorMessage}]]*/ null;
+          if (errorMessage) {
+              alert(errorMessage);
+          }
+      }
+
+
       function addCart(){
           let form = document.querySelector('form');
           form.action = "/cart/add"
+          form.method= "post"
           form.submit()
       }
 

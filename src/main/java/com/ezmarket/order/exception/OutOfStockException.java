@@ -1,4 +1,4 @@
-package com.ezmarket.order;
+package com.ezmarket.order.exception;
 
 public class OutOfStockException extends RuntimeException{
     public OutOfStockException(String message){
