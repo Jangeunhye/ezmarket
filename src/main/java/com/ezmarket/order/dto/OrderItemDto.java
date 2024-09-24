@@ -1,7 +1,8 @@
 package com.ezmarket.order.dto;
 
+import com.ezmarket.cart.domain.entity.CartItem;
 import com.ezmarket.item.domain.entity.Item;
-import com.ezmarket.orderItem.OrderItem;
+import com.ezmarket.order.domain.entity.OrderItem;
 import lombok.*;
 
 
@@ -38,6 +39,18 @@ public class OrderItemDto {
                 .build();
 
         return orderItem;
+    }
+
+    public static OrderItemDto createOrderItemDtoFromCartItem(CartItem cartItem){
+        return OrderItemDto.builder()
+                .amounts(cartItem.getAmounts())
+                .itemId(cartItem.getItem().getId())
+                .itemName(cartItem.getItem().getItemName())
+                .itemPrice(cartItem.getItem().getPrice())
+                .quantity(cartItem.getQuantity())
+                .thumbnailImageUrl(cartItem.getItem().getImageList().get(0).getImageUrl())
+                .build();
+
     }
 
 
