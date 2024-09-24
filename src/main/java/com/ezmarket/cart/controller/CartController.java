@@ -28,11 +28,11 @@ public class CartController {
 
 
     @PostMapping("/cart/add")
-    public String addCartItem(@RequestParam("itemId") Long itemId, @RequestParam("quantity") Integer quantity,
+    public String addCartItem(@RequestParam("itemId") Long itemId, @RequestParam("quantity") Integer addingQuantity,
                               Principal principal, RedirectAttributes redirectAttributes,
                               Model model){
         try{
-            cartService.addCartItem(itemId, quantity,principal.getName());
+            cartService.addCartItem(itemId, addingQuantity,principal.getName());
             redirectAttributes.addFlashAttribute("successMessage","장바구니 담기 성공!");
         } catch (Exception e){
             model.addAttribute("errorMessage","장바구니 담기 실패");
@@ -55,7 +55,7 @@ public class CartController {
             cartService.updateCartItem(cartItemRequestDto,cartItemId, principal.getName());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
