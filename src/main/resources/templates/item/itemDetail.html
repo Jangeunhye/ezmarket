@@ -66,6 +66,23 @@
             width: 100%;
             padding: 10px;
         }
+        .quantity-box{
+            background-color: white;
+            font-size: 18px;
+            border: 1px solid #383735;
+        }
+        .quantity-box button{
+            background-color: white;
+            border: none;
+            text-align: center;
+            width: 25px;
+        }
+        .quantity-box span{
+            text-align: center;
+            width: 30px;
+            display: inline-block;
+        }
+
 
 
 
@@ -100,6 +117,40 @@
           form.action="/order"
 
           form.submit()
+      }
+
+      function plusQuantity(event){
+          event.preventDefault()
+
+          // 현재 수량 가져오기
+          const quantityLabelElement = document.getElementById("quantity-label");
+          const quantityInputElement = document.getElementById("quantity-input");
+          const previousQuantity = parseInt(quantityLabelElement.innerText);
+          const newQuantity = previousQuantity+1;
+
+          // 새로운 수량 업데이트
+          quantityLabelElement.innerText = newQuantity.toString();
+          quantityInputElement.value = newQuantity.toString();
+
+      }
+
+      function minusQuantity(event){
+          event.preventDefault()
+
+          // 현재 수량 가져오기
+          const quantityLabelElement = document.getElementById("quantity-label");
+          const quantityInputElement = document.getElementById("quantity-input");
+
+          const previousQuantity = parseInt(quantityLabelElement.innerText);
+          if(previousQuantity<=1){
+              return;
+          }
+          const newQuantity = previousQuantity-1;
+
+          // 새로운 수량 업데이트
+          quantityLabelElement.innerText = newQuantity.toString();
+          quantityInputElement.value = newQuantity.toString();
+
       }
         /*]]>*/
 
@@ -137,8 +188,14 @@
         </div>
 <!--    USER, 익명-->
         <div class="d-flex align-items-center" sec:authorize="hasAnyRole('USER','ANONYMOUS')">
-          <span class="label-box">주문수량</span>
-          <input type="number" name="quantity" id="quantity" style="width: 100px" value="1" min="1">
+          <span class="label-box">구매 수량</span>
+          <div class="quantity-box">
+            <button onclick="minusQuantity(event)">-</button>
+            <span id="quantity-label">1</span>
+            <input type="hidden" name="quantity" id="quantity-input" style="width: 100px" value="1" min="1">
+            <button onclick="plusQuantity(event)">＋</button>
+          </div>
+
         </div>
 
         <div class="button-container mb-1" sec:authorize="hasAnyRole('USER','ANONYMOUS')">
@@ -154,7 +211,7 @@
 
  <!--    ADMIN-->
         <div class="d-flex align-items-center" sec:authorize="hasRole('ADMIN')">
-          <span class="label-box">주문수량</span></p>
+          <span class="label-box">재고수량</span>
           <span th:text="${itemDto.getStock()+'개'}" class="fs-5"></span>
         </div>
 
