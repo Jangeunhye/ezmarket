@@ -1,11 +1,9 @@
-package com.ezmarket.orderItem;
+package com.ezmarket.order.domain.entity;
 
 import com.ezmarket.item.domain.entity.Item;
-import com.ezmarket.order.domain.entity.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Builder
@@ -16,7 +14,7 @@ public class OrderItem {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "order_item")
+    @Column(name = "order_item_id")
     private Long id;
 
     private Integer quantity;

@@ -4,7 +4,7 @@ import com.ezmarket.global.common.BaseTimeEntity;
 import com.ezmarket.image.domain.entity.Image;
 import com.ezmarket.item.domain.enums.SellStatus;
 import com.ezmarket.item.dto.ItemDto;
-import com.ezmarket.order.OutOfStockException;
+import com.ezmarket.order.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

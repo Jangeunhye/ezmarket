@@ -9,7 +9,7 @@ import com.ezmarket.order.domain.entity.Order;
 import com.ezmarket.order.dto.OrderDto;
 import com.ezmarket.order.dto.OrderItemDto;
 import com.ezmarket.order.repository.OrderRepository;
-import com.ezmarket.orderItem.OrderItem;
+import com.ezmarket.order.domain.entity.OrderItem;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,38 +48,9 @@ public class OrderService {
 
     @Transactional
     public void order(OrderDto orderDto,String email){
-
         Member member = memberRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        handleOrder(orderDto,member);
 
-        Order order = orderDto.toEntity(member);
-
-        Long totalAmounts = 0L;
-
-        for (OrderItemDto orderItemDto : orderDto.getOrderItemDtoList()){
-            // 1. 아이템 있는지 확인하기
-            Item item = itemRepository.findById(orderItemDto.getItemId()).orElseThrow(EntityNotFoundException::new);
-
-            // 2. 재고수량 주문수량 확인 후 빼기
-            item.removeStock(orderItemDto.getQuantity());
-
-            // 3. 엔티티로 변환
-            OrderItem orderItem = orderItemDto.toEntity(item);
-
-
-            // 4. amounts
-            totalAmounts += orderItemDto.getAmounts();
-
-            // 5. 양방향 매칭
-            order.addOrderItem(orderItem);
-            orderItem.linkOrder(order);
-
-        }
-
-        // total_amounts 업데이트
-        order.updateTotalAmounts(totalAmounts);
-
-        // Order 저장
-        orderRepository.save(order);
     }
 
 
@@ -109,5 +80,38 @@ public class OrderService {
         }
 
         order.cancelOrder();
+    }
+
+
+    public void handleOrder(OrderDto orderDto,Member member){
+
+        Order order = orderDto.toEntity(member);
+
+        Long totalAmounts = 0L;
+
+        for (OrderItemDto orderItemDto : orderDto.getOrderItemDtoList()){
+            // 1. 아이템 있는지 확인하기
+            Item item = itemRepository.findById(orderItemDto.getItemId()).orElseThrow(EntityNotFoundException::new);
+
+            // 2. 재고수량 주문수량 확인 후 빼기
+            item.removeStock(orderItemDto.getQuantity());
+
+            // 3. 엔티티로 변환
+            OrderItem orderItem = orderItemDto.toEntity(item);
+
+            // 4. amounts
+            totalAmounts += orderItemDto.getAmounts();
+
+            // 5. 양방향 매칭
+            order.addOrderItem(orderItem);
+            orderItem.linkOrder(order);
+
+        }
+
+        // total_amounts 업데이트
+        order.updateTotalAmounts(totalAmounts);
+
+        // Order 저장
+        orderRepository.save(order);
     }
 }

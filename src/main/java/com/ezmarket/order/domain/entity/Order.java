@@ -1,10 +1,8 @@
 package com.ezmarket.order.domain.entity;
 
 import com.ezmarket.global.common.BaseTimeEntity;
-import com.ezmarket.image.domain.entity.Image;
 import com.ezmarket.member.domain.entity.Member;
 import com.ezmarket.order.domain.enums.OrderStatus;
-import com.ezmarket.orderItem.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 

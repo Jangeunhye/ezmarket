@@ -3,9 +3,8 @@ package com.ezmarket.order.controller;
 import com.ezmarket.item.repository.ItemRepository;
 import com.ezmarket.member.dto.CustomUserDetails;
 import com.ezmarket.member.repository.MemberRepository;
-import com.ezmarket.order.OutOfStockException;
+import com.ezmarket.order.exception.OutOfStockException;
 import com.ezmarket.order.domain.entity.Order;
-import com.ezmarket.order.domain.enums.OrderStatus;
 import com.ezmarket.order.dto.OrderDto;
 import com.ezmarket.order.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -77,7 +75,6 @@ public class OrderController {
             orderService.updateOrderStatus(orderId,principal.getName());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            log.info("싦패 이유"+e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("주문 취소 실패");
         }
     }
