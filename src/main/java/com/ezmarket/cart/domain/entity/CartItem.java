@@ -30,11 +30,11 @@ public class CartItem {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    public void addExistingCartItem(Integer quantity){
-        this.quantity = this.quantity + quantity;
+    public void addExistingCartItem(Integer addingQuantity){
+        this.quantity = this.quantity + addingQuantity;
 
         // 금액 업데이트
-        this.amounts = this.amounts+ quantity * item.getPrice();
+        this.amounts = this.amounts+ addingQuantity * item.getPrice();
     }
 
     public void updateCartItem(Integer quantity){

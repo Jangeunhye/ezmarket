@@ -46,6 +46,7 @@ public class CartService {
         if(cart==null){
             return CartDto.builder()
                     .cartItemDtoList(new ArrayList<>())
+                    .totalAmounts(0L)
                     .build();
         }
 
@@ -59,16 +60,22 @@ public class CartService {
 
 
     @Transactional
-    public void updateCartItem(CartItemRequestDto cartItemRequestDto, Long cartItemId, String email){
+    public void updateCartItem(CartItemRequestDto cartItemRequestDto, Long cartItemId, String email) throws IllegalAccessException {
+        Integer quantity = cartItemRequestDto.getQuantity();
         Member member = memberRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 
-        Cart cart = cartRepository.findByMember(member);
-
-        CartItem cartItem = cartItemRepository.findByCart(cart);
+        //memeber의 id가 cart의 id와 같은지 확인해야됨!
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
+        if(!cartItem.getCart().getMember().getId().equals(member.getId())){
+            throw new IllegalAccessException("장바구니 수정 권한이 없습니다.");
+        };
 
         Long previousAmounts = cartItem.getAmounts();
-        cartItem.updateCartItem(cartItemRequestDto.getQuantity());
-        cart.updateTotalAmounts(previousAmounts , cartItem.getAmounts());
+        Long newAmounts = quantity* cartItem.getItem().getPrice();
+        cartItem.updateCartItem(quantity);
+        cartItem.getCart().updateTotalAmounts(previousAmounts,newAmounts);
+
+
 
     }
 
@@ -112,7 +119,7 @@ public class CartService {
     }
 
     @Transactional
-    public void addCartItem(Long itemId, Integer quantity, String email){
+    public void addCartItem(Long itemId, Integer addingQuantity, String email){
 
         Member member = memberRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 
@@ -128,14 +135,15 @@ public class CartService {
 
         if(cartItem!=null){
             Long previousAmounts = cartItem.getAmounts();
-            cartItem.addExistingCartItem(quantity);
-            cart.updateTotalAmounts(previousAmounts , cartItem.getAmounts());
+            cartItem.addExistingCartItem(addingQuantity);
+            Long newAmounts = cartItem.getAmounts();
+            cart.updateTotalAmounts(previousAmounts ,newAmounts);
         }
         else{
-             cartItem = createNewCartItem(cart, item, quantity);
+             cartItem = createNewCartItem(cart, item, addingQuantity);
+            cart.addCartItem(cartItem);
         }
 
-        cart.addCartItem(cartItem);
 
     }
 

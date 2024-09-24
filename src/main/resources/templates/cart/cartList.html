@@ -3,19 +3,27 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout}">
 
+  <th:block layout:fragment="css">
   <style>
 
-      .form-container {
-          margin: 40px auto;
-          max-width: 600px;
-          padding: 20px;
-          background-color: #f9f9f9;
-          border-radius: 8px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      .quantity-box{
+          background-color: white;
+          font-size: 18px;
+          border: 1px solid #383735;
       }
-
-
+      .quantity-box button{
+          background-color: white;
+          border: none;
+          text-align: center;
+          width: 25px;
+      }
+      .quantity-box span{
+          text-align: center;
+          width: 30px;
+          display: inline-block;
+      }
   </style>
+  </th:block>
 
   <!-- 자바스크립트 추가 -->
   <th:block layout:fragment="script">
@@ -30,8 +38,8 @@
         }
 
 
-        function updateQuantity(cartItemId, quantity) {
-            if (quantity < 1) {
+        function updateQuantity(cartItemId, newQuantity, previousQuantity) {
+            if (newQuantity < 1) {
                 alert("수량은 1 이상이어야 합니다.");
                 return;
             }
@@ -44,7 +52,7 @@
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken  // CSRF token 추가
                 },
-                body: JSON.stringify({ quantity: quantity })
+                body: JSON.stringify({ quantity: newQuantity })
             })
                 .then(response=>
                     {
@@ -53,7 +61,7 @@
                             const price = parseInt(document.getElementById("price_"+cartItemId).innerText.replace(/,/g,''));
                             const amountsElement = document.getElementById("amounts_"+cartItemId);
                             const previousAmounts = parseInt(amountsElement.innerText.replace(/,/g,''));
-                            const newAmounts = quantity * price;
+                            const newAmounts = newQuantity * price;
                             amountsElement.innerHTML = newAmounts.toLocaleString()+'원';
 
                             // 전체 금액 업데이트
@@ -65,12 +73,16 @@
                             alert("수량이 변경되었습니다.")
                         }
                         else{
+                            // 서버 업데이트 실패 시 이전 수량으로 되돌리기
+                            document.getElementById("quantity-label_" + cartItemId).innerText = previousQuantity;
                             alert("수량 변경이 실패하였습니다.")
                         }
                     }
                 )
                 .catch(error => {
                     console.error('에러 발생:', error);
+                    // 요청 실패 시 이전 수량으로 되돌리기
+                    document.getElementById("quantity-label_" + cartItemId).innerText = previousQuantity.toString();
                     alert('오류가 발생했습니다.');
                 });
         }
@@ -99,13 +111,44 @@
                 });
         }
 
+        function plusQuantity(event, cartItemId){
+            event.preventDefault();
+
+            // 현재 수량 가져오기
+            const quantityLabelElement = document.getElementById("quantity-label_" + cartItemId);
+            const previousQuantity = parseInt(quantityLabelElement.innerText);
+            const newQuantity = previousQuantity+1;
+
+            // 새로운 수량 업데이트
+            quantityLabelElement.innerText = newQuantity.toString();
+
+            updateQuantity(cartItemId, newQuantity, previousQuantity);
+
+        }
+
+        function minusQuantity(event,cartItemId){
+            event.preventDefault()
+
+            // 현재 수량 가져오기
+            const quantityLabelElement = document.getElementById("quantity-label_" + cartItemId);
+            const previousQuantity = parseInt(quantityLabelElement.innerText);
+
+            if(previousQuantity<=1){
+                return;
+            }
+            const newQuantity = previousQuantity-1;
+
+            // 새로운 수량 업데이트
+            quantityLabelElement.innerText = newQuantity.toString();
+            updateQuantity(cartItemId, newQuantity, previousQuantity);
+        }
 
     </script>
   </th:block>
 
 
   <div layout:fragment="content">
-    <div class="form-container border p-4">
+    <div class="border p-4">
       <h2>장바구니</h2>
       <hr>
       <section>
@@ -126,15 +169,20 @@
           <div class="d-flex flex-column ms-4 w-100">
             <div class="fs-5" th:text="${cartItemDto.getItemName()}">상품 이름</div>
             <hr>
-            <div>
-              <span class="fs-6">상품 가격: </span>
+            <div class="mb-2">
+              <span class="fs-6 pe-2">상품 가격: </span>
               <span th:id="'price_'+${cartItemDto.cartItemId}" th:text="${#numbers.formatInteger(cartItemDto.itemPrice, 0, 'COMMA')}+'원'" class="fs-6 fw-bold">상품 가격</span>
+            </div>
+<!--            수량 조절-->
+            <div class="d-flex align-items-center mb-2">
+              <span class="label-box pe-2">구매 수량</span>
+              <div class="quantity-box">
+                <button th:onclick="'minusQuantity(event,'+${cartItemDto.cartItemId}+')'">-</button>
+                <span th:id="'quantity-label_'+${cartItemDto.cartItemId}" th:text="${cartItemDto.quantity}">1</span>
+                <button th:onclick="'plusQuantity(event,'+${cartItemDto.cartItemId}+')'">+</button>
+              </div>
+            </div>
 
-            </div>
-            <div>
-              <label th:for="quantity">수량:</label>
-              <input type="number" name="quantity" th:value="${cartItemDto.quantity}" th:onchange="'updateQuantity(\'' + ${cartItemDto.getCartItemId()} + '\', this.value)'">
-            </div>
             <div>
               <span th:id="'amounts_'+${cartItemDto.cartItemId}" th:text="${#numbers.formatInteger(cartItemDto.quantity*cartItemDto.itemPrice, 0, 'COMMA')}+'원'" class="fs-5 fw-bold">상품별 총 금액</span>
             </div>
